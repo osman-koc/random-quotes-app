@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Material(
       child: FutureBuilder<List<Quote>>(
-        future: fetchData(),
+        future: fetchQuotes(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData) {
@@ -101,13 +101,6 @@ class _HomeScreenState extends State<HomeScreen> {
         Share.share(quoteText);
       },
     );
-  }
-
-  fetchData() async {
-    String langCode = "en";
-    final dataUri = Uri.parse("https://osmkoc.com/quotes-$langCode.json");
-    var res = await http.get(dataUri);
-    return jsonDecode(res.body)["quotes"];
   }
 
   Future<List<Quote>> fetchQuotes() async {
