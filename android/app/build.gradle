@@ -48,8 +48,8 @@ android {
 
     defaultConfig {
         applicationId "com.osmankoc.randomquotes"
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        minSdkVersion 21 //flutter.minSdkVersion
+        targetSdkVersion 33 //flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
