@@ -8,5 +8,8 @@
     "about_app_title": "About App",
     "developedby": "Developed by",
     "contact": "Contact",
-    "close": "Close"
+    "close": "Close",
+    "failed_to_load_quotes": "Failed to load quotes",
+    "nothing_found": "Nothing found",
+    "error": "An unknown error has occurred."
 }

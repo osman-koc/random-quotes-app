@@ -8,5 +8,8 @@
     "about_app_title": "Uygulama Hakkında",
     "developedby": "Geliştiren",
     "contact": "İletişim",
-    "close": "Kapat"
+    "close": "Kapat",
+    "failed_to_load_quotes": "Alıntı yüklenemedi.",
+    "nothing_found": "Hiçbir şey bulunamadı.",
+    "error": "Bilinmeyen bir hata gerçekleşti."
 }

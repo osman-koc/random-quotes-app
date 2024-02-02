@@ -1,7 +1,8 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:randomquotes/constants/app_assets.dart';
+import 'package:randomquotes/constants/app_colors.dart';
 import 'package:randomquotes/extensions/app_lang.dart';
 import 'package:randomquotes/model/quote.dart';
 import 'package:share_plus/share_plus.dart';
@@ -16,17 +17,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _colors = [
-    Vx.gray800,
-    Vx.red800,
-    Vx.blue800,
-    Vx.green800,
-    Vx.teal800,
-    Vx.purple800,
-    Vx.pink800,
-    Vx.orange800,
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -38,51 +28,13 @@ class _HomeScreenState extends State<HomeScreen> {
               List<Quote> quotesData = snapshot.data!;
               return StatefulBuilder(
                 builder: (context, setState) {
-                  var selectedColor = _colors[Random().nextInt(_colors.length)];
-                  var appNameWidget =
-                      context.translate.appName.text.white.xl3.bold.make();
-
-                  return VxSwiper(
-                    scrollDirection: Axis.vertical,
-                    height: context.screenHeight,
-                    viewportFraction: 1.0,
-                    onPageChanged: (index) {
-                      setState(() {});
-                    },
-                    items: quotesData.map<Widget>(
-                      (e) {
-                        var quoteTextWidget = e
-                            .quoteText.text.white.italic.bold.xl3
-                            .make()
-                            .shimmer()
-                            .box
-                            .shadow2xl
-                            .make();
-                        var quoteAuthorWidget = e.quoteAuthor.text.make();
-                        return VStack(
-                          [
-                            appNameWidget,
-                            quoteTextWidget,
-                            quoteAuthorWidget,
-                            shareIconButton(e.quoteText)
-                          ],
-                          crossAlignment: CrossAxisAlignment.center,
-                          alignment: MainAxisAlignment.spaceAround,
-                        )
-                            .animatedBox
-                            .p16
-                            .color(selectedColor)
-                            .make()
-                            .h(context.screenHeight);
-                      },
-                    ).toList(),
-                  );
+                  return vxSwiperItem(context, quotesData);
                 },
               );
             }
-            return "Nothing found".text.makeCentered();
+            return context.translate.nothingFound.text.makeCentered();
           } else if (snapshot.connectionState == ConnectionState.none) {
-            return "Error".text.makeCentered();
+            return context.translate.error.text.makeCentered();
           }
           return const CircularProgressIndicator().centered();
         },
@@ -90,7 +42,69 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  IconButton shareIconButton(String quoteText) {
+  VxSwiper vxSwiperItem(BuildContext context, List<Quote> quotesData) {
+    var selectedColor = AppColors(context).bgRandomColor;
+    return VxSwiper(
+      scrollDirection: Axis.vertical,
+      height: context.screenHeight,
+      viewportFraction: 1.0,
+      onPageChanged: (index) {
+        setState(() {});
+      },
+      items: quotesData.map<Widget>(
+        (e) {
+          return VStack(
+            [
+              appLogoWidget(),
+              quoteTextWidget(e),
+              quoteAuthorWidget(e),
+              shareIconButton(e)
+            ],
+            crossAlignment: CrossAxisAlignment.center,
+            alignment: MainAxisAlignment.spaceAround,
+          ).animatedBox.p16.color(selectedColor).make().h(context.screenHeight);
+        },
+      ).toList(),
+    );
+  }
+
+  Widget quoteAuthorWidget(Quote e) {
+    return e.quoteAuthor.text.white.italic.xl2
+        .make()
+        .shimmer()
+        .box
+        .outerShadowLg
+        .make();
+  }
+
+  Widget quoteTextWidget(Quote e) {
+    return e.quoteText.text.white.italic.bold.xl3
+        .make()
+        .shimmer()
+        .box
+        .outerShadow3Xl
+        .make();
+  }
+
+  Container appLogoWidget() {
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black87.withOpacity(0.2),
+            spreadRadius: 0.1,
+            blurRadius: 12,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Image.asset(AppAssets.appIconWhite, width: 50),
+    );
+  }
+
+  IconButton shareIconButton(Quote quoteItem) {
     return IconButton(
       icon: const Icon(
         Icons.share,
@@ -98,14 +112,14 @@ class _HomeScreenState extends State<HomeScreen> {
         size: 30,
       ),
       onPressed: () {
-        Share.share(quoteText);
+        Share.share("'${quoteItem.quoteText}' - ${quoteItem.quoteAuthor}");
       },
     );
   }
 
   Future<List<Quote>> fetchQuotes() async {
     String langCode = "en";
-    final dataUri = Uri.parse("https://osmkoc.com/quotes-$langCode.json");
+    final dataUri = Uri.parse("https://osmkoc.com/data/quotes-$langCode.json");
 
     final response = await http.get(dataUri);
 
@@ -117,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       return quotes;
     } else {
-      throw Exception('Failed to load quotes');
+      throw Exception(context.translate.failedToLoadQuotes);
     }
   }
 }
