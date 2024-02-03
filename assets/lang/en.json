@@ -11,5 +11,6 @@
     "close": "Close",
     "failed_to_load_quotes": "Failed to load quotes",
     "nothing_found": "Nothing found",
-    "error": "An unknown error has occurred."
+    "error": "An unknown error has occurred.",
+    "select_language": "Select Language"
 }

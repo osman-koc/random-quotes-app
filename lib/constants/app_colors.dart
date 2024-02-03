@@ -5,8 +5,9 @@ import 'package:velocity_x/velocity_x.dart';
 
 class AppColors {
   final BuildContext context;
+  final Random _random;
 
-  AppColors(this.context);
+  AppColors(this.context) : _random = Random();
 
   bool get isDarkMode {
     return Theme.of(context).brightness == Brightness.dark;
@@ -25,5 +26,5 @@ class AppColors {
         Vx.pink800,
         Vx.orange800,
       ];
-  Color get bgRandomColor => bgColors[Random().nextInt(bgColorLength.length)];
+  Color get bgRandomColor => bgColors[_random.nextInt(bgColorLength)];
 }

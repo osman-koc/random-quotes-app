@@ -1,13 +1,12 @@
-import 'dart:convert';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:randomquotes/constants/app_assets.dart';
+import 'package:randomquotes/constants/app_cache.dart';
 import 'package:randomquotes/constants/app_colors.dart';
-import 'package:randomquotes/extensions/app_lang.dart';
 import 'package:randomquotes/model/quote.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
-import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -17,59 +16,112 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  //List<QuoteModel> quotesData = [];
+  String _selectedLanguage = 'tr';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLanguagePreference();
+    //_fetchQuotes();
+  }
+
+  Future<void> _loadLanguagePreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _selectedLanguage =
+          prefs.getString(AppCache.selectedLanguageCode) ?? 'tr';
+    });
+  }
+
+  Future<void> _saveLanguagePreference(String language) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(AppCache.selectedLanguageCode, language);
+  }
+
+  // Future<void> _fetchQuotes() async {
+  //   final querySnapshot = await FirebaseFirestore.instance
+  //       .collection('quotes_$selectedLanguage')
+  //       .get();
+  //   setState(() {
+  //     quotesData = querySnapshot.docs
+  //         .map((doc) => QuoteModel.fromFirestore(doc))
+  //         .toList();
+  //     quotesData.shuffle();
+  //   });
+  // }
+
+  // QuoteModel getRandomQuote() {
+  //   final random = Random();
+  //   return quotesData[random.nextInt(quotesData.length)];
+  // }
+
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: FutureBuilder<List<Quote>>(
-        future: fetchQuotes(),
+    return Scaffold(
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('quotes_$_selectedLanguage')
+            .snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasData) {
-              List<Quote> quotesData = snapshot.data!;
-              return StatefulBuilder(
-                builder: (context, setState) {
-                  return vxSwiperItem(context, quotesData);
-                },
-              );
-            }
-            return context.translate.nothingFound.text.makeCentered();
-          } else if (snapshot.connectionState == ConnectionState.none) {
-            return context.translate.error.text.makeCentered();
+          if (!snapshot.hasData) {
+            return CircularProgressIndicator();
           }
-          return const CircularProgressIndicator().centered();
+          final quotesData = snapshot.data!.docs;
+          quotesData.shuffle();
+          return vxSwiperWidget(quotesData);
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Get new quotes when language's change
+          final newLanguage = _selectedLanguage == 'tr' ? 'en' : 'tr';
+          _saveLanguagePreference(newLanguage);
+          //_fetchQuotes();
+          setState(() {
+            _selectedLanguage = newLanguage;
+          });
+        },
+        child: Icon(Icons.language),
       ),
     );
   }
 
-  VxSwiper vxSwiperItem(BuildContext context, List<Quote> quotesData) {
-    var selectedColor = AppColors(context).bgRandomColor;
+  VxSwiper vxSwiperWidget(quotesData) {
     return VxSwiper(
       scrollDirection: Axis.vertical,
       height: context.screenHeight,
       viewportFraction: 1.0,
       onPageChanged: (index) {
-        setState(() {});
+        setState(() {
+        });
       },
       items: quotesData.map<Widget>(
         (e) {
+          var model = QuoteModel.fromFirestore(e);
+          var selectedColor = AppColors(context).bgRandomColor;
           return VStack(
             [
               appLogoWidget(),
-              quoteTextWidget(e),
-              quoteAuthorWidget(e),
-              shareIconButton(e)
+              quoteTextWidget(model),
+              quoteAuthorWidget(model),
+              shareIconButton(model)
             ],
             crossAlignment: CrossAxisAlignment.center,
             alignment: MainAxisAlignment.spaceAround,
-          ).animatedBox.p16.color(selectedColor).make().h(context.screenHeight);
+          )
+              .animatedBox
+              .p16
+              .color(selectedColor)
+              .make()
+              .h(context.screenHeight);
         },
       ).toList(),
     );
   }
 
-  Widget quoteAuthorWidget(Quote e) {
-    return e.quoteAuthor.text.white.italic.xl2
+  Widget quoteAuthorWidget(QuoteModel e) {
+    return e.author.text.white.italic.xl2
         .make()
         .shimmer()
         .box
@@ -77,8 +129,8 @@ class _HomeScreenState extends State<HomeScreen> {
         .make();
   }
 
-  Widget quoteTextWidget(Quote e) {
-    return e.quoteText.text.white.italic.bold.xl3
+  Widget quoteTextWidget(QuoteModel e) {
+    return e.quote.text.white.italic.bold.xl3
         .make()
         .shimmer()
         .box
@@ -104,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  IconButton shareIconButton(Quote quoteItem) {
+  IconButton shareIconButton(QuoteModel quoteItem) {
     return IconButton(
       icon: const Icon(
         Icons.share,
@@ -112,26 +164,8 @@ class _HomeScreenState extends State<HomeScreen> {
         size: 30,
       ),
       onPressed: () {
-        Share.share("'${quoteItem.quoteText}' - ${quoteItem.quoteAuthor}");
+        Share.share("'${quoteItem.quote}' - ${quoteItem.author}");
       },
     );
-  }
-
-  Future<List<Quote>> fetchQuotes() async {
-    String langCode = "en";
-    final dataUri = Uri.parse("https://osmkoc.com/data/quotes-$langCode.json");
-
-    final response = await http.get(dataUri);
-
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonList = json.decode(response.body)['quotes'];
-
-      List<Quote> quotes =
-          jsonList.map((json) => Quote.fromJson(json)).toList();
-
-      return quotes;
-    } else {
-      throw Exception(context.translate.failedToLoadQuotes);
-    }
   }
 }

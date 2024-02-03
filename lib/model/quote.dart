@@ -1,13 +1,23 @@
-class Quote {
-  final String quoteText;
-  final String quoteAuthor;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-  Quote({required this.quoteText, required this.quoteAuthor});
+class QuoteModel {
+  final String quote;
+  final String author;
 
-  factory Quote.fromJson(Map<String, dynamic> json) {
-    return Quote(
-      quoteText: json['quoteText'],
-      quoteAuthor: json['quoteAuthor'],
+  QuoteModel({required this.quote, required this.author});
+
+  factory QuoteModel.fromJson(Map<String, dynamic> json) {
+    return QuoteModel(
+      quote: json['quote'] ?? "",
+      author: json['author'] ?? "",
+    );
+  }
+
+  factory QuoteModel.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    return QuoteModel(
+      quote: data['quote'] ?? '',
+      author: data['author'] ?? '',
     );
   }
 }
