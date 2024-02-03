@@ -5,6 +5,7 @@
     "app_email": "info@osmkoc.com",
     "loading": "Yükleniyor...",
     "osmkoccom": "osmkoc.com",
+    "about": "Hakkında",
     "about_app_title": "Uygulama Hakkında",
     "developedby": "Geliştiren",
     "contact": "İletişim",
@@ -12,5 +13,5 @@
     "failed_to_load_quotes": "Alıntı yüklenemedi.",
     "nothing_found": "Hiçbir şey bulunamadı.",
     "error": "Bilinmeyen bir hata gerçekleşti.",
-    "select_language": "Dil Seçin"
+    "change_language": "Dil değiştir"
 }

@@ -5,6 +5,7 @@
     "app_email": "info@osmkoc.com",
     "loading": "Loading...",
     "osmkoccom": "osmkoc.com",
+    "about": "About",
     "about_app_title": "About App",
     "developedby": "Developed by",
     "contact": "Contact",
@@ -12,5 +13,5 @@
     "failed_to_load_quotes": "Failed to load quotes",
     "nothing_found": "Nothing found",
     "error": "An unknown error has occurred.",
-    "select_language": "Select Language"
+    "change_language": "Change Language"
 }

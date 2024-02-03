@@ -1,9 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:randomquotes/components/speed_dial.dart';
+import 'package:randomquotes/components/speed_dial_child.dart';
 import 'package:randomquotes/constants/app_assets.dart';
 import 'package:randomquotes/constants/app_cache.dart';
 import 'package:randomquotes/constants/app_colors.dart';
+import 'package:randomquotes/extensions/app_lang.dart';
 import 'package:randomquotes/model/quote.dart';
+import 'package:randomquotes/screens/about_popup.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -72,18 +76,62 @@ class _HomeScreenState extends State<HomeScreen> {
           return vxSwiperWidget(quotesData);
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Get new quotes when language's change
-          final newLanguage = _selectedLanguage == 'tr' ? 'en' : 'tr';
-          _saveLanguagePreference(newLanguage);
-          //_fetchQuotes();
-          setState(() {
-            _selectedLanguage = newLanguage;
-          });
-        },
-        child: Icon(Icons.language),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     _showMenu(context);
+      //   },
+      //   child: Icon(Icons.menu),
+      // ),
+      floatingActionButton: SpeedDial(
+        child: Icon(Icons.menu_outlined),
+        closedForegroundColor: Vx.gray800,
+        openForegroundColor: Vx.white,
+        closedBackgroundColor: Vx.white,
+        openBackgroundColor: Vx.gray800,
+        labelsBackgroundColor: Vx.white,
+        speedDialChildren: <SpeedDialChild>[
+          SpeedDialChild(
+            child: Icon(Icons.language_outlined),
+            foregroundColor: Vx.white,
+            backgroundColor: Vx.emerald600,
+            label: context.translate.changeLanguage,
+            onPressed: () {
+              setState(() {
+                _changeLanguage();
+              });
+            },
+            closeSpeedDialOnPressed: true,
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.info_outline),
+            foregroundColor: Vx.white,
+            backgroundColor: Vx.amber600,
+            label: context.translate.about,
+            onPressed: () {
+              setState(() {
+                _showAboutDialog(context);
+              });
+            },
+          ),
+        ],
       ),
+    );
+  }
+
+  void _changeLanguage() {
+    var newLanguage = _selectedLanguage == 'tr' ? 'en' : 'tr';
+    _saveLanguagePreference(newLanguage);
+    setState(() {
+      _selectedLanguage = newLanguage;
+    });
+  }
+
+  void _showAboutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const AboutScreenPopup();
+      },
     );
   }
 
@@ -93,8 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
       height: context.screenHeight,
       viewportFraction: 1.0,
       onPageChanged: (index) {
-        setState(() {
-        });
+        setState(() {});
       },
       items: quotesData.map<Widget>(
         (e) {
@@ -109,12 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
             crossAlignment: CrossAxisAlignment.center,
             alignment: MainAxisAlignment.spaceAround,
-          )
-              .animatedBox
-              .p16
-              .color(selectedColor)
-              .make()
-              .h(context.screenHeight);
+          ).animatedBox.p16.color(selectedColor).make().h(context.screenHeight);
         },
       ).toList(),
     );
@@ -160,8 +202,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return IconButton(
       icon: const Icon(
         Icons.share,
-        color: Colors.white,
-        size: 30,
+        color: Vx.white,
+        size: 34,
       ),
       onPressed: () {
         Share.share("'${quoteItem.quote}' - ${quoteItem.author}");
