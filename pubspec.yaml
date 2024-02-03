@@ -20,6 +20,7 @@ dependencies:
   package_info_plus: ^4.2.0
   share_plus: ^7.2.2
   shared_preferences: ^2.2.2
+  simple_speed_dial: ^0.1.7
   url_launcher: ^6.2.4
   velocity_x: ^4.1.2
 

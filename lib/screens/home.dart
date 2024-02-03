@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:randomquotes/components/speed_dial.dart';
-import 'package:randomquotes/components/speed_dial_child.dart';
 import 'package:randomquotes/constants/app_assets.dart';
 import 'package:randomquotes/constants/app_cache.dart';
 import 'package:randomquotes/constants/app_colors.dart';
@@ -10,6 +8,7 @@ import 'package:randomquotes/model/quote.dart';
 import 'package:randomquotes/screens/about_popup.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:simple_speed_dial/simple_speed_dial.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class HomeScreen extends StatefulWidget {

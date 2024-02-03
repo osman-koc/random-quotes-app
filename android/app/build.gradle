@@ -65,10 +65,11 @@ android {
     }
 
     buildTypes {
+        ndkVersion "25.2.9519653"
         release {
             signingConfig signingConfigs.release
             ndk {
-                debugSymbolLevel 'full'
+                debugSymbolLevel 'FULL'
             }
         }
     }
