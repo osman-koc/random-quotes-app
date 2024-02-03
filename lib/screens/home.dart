@@ -76,12 +76,6 @@ class _HomeScreenState extends State<HomeScreen> {
           return vxSwiperWidget(quotesData);
         },
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     _showMenu(context);
-      //   },
-      //   child: Icon(Icons.menu),
-      // ),
       floatingActionButton: SpeedDial(
         child: Icon(Icons.menu_outlined),
         closedForegroundColor: Vx.gray800,
