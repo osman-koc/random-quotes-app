@@ -83,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
         closedBackgroundColor: Vx.white,
         openBackgroundColor: Vx.gray800,
         labelsBackgroundColor: Vx.white,
+        labelsStyle: TextStyle(color: Vx.black),
         speedDialChildren: <SpeedDialChild>[
           SpeedDialChild(
             child: Icon(Icons.language_outlined),
