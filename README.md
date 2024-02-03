@@ -1,16 +1,36 @@
-# randomquotes
+# Random Quotes App
 
-A new Flutter project.
+Flutter app that allows users to explore and discover random quotes in Turkish and English.
+
+## Features
+
+- View random quotes in Turkish and English.
+- Switch between languages seamlessly.
+- Share your favorite quotes with friends.
+
+## Screenshots
+
+[Add screenshots if you have]
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/random-quotes-app.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd random-quotes-app
+   ```
+3. Install dependencies:
+   ```bash
+   flutter pub get
+   ```
+4. Run the app:
+   ```bash
+   flutter run
+   ```
 
-A few resources to get you started if this is your first Flutter project:
+## Contributing
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+If you'd like to contribute, please fork the repository and create a pull request. Issues and feature requests are welcome!
