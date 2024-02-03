@@ -8,7 +8,11 @@ Flutter app that allows users to explore and discover random quotes in Turkish a
 - Switch between languages seamlessly.
 - Share your favorite quotes with friends.
 
-## Screenshot
+## Screenshots
+
+<img src="screenshots/ss_en_1.jpeg" width="250" /> <img src="screenshots/ss_en_2.jpeg" width="250" /> <img src="screenshots/ss_en_3.jpeg" width="250" />
+
+### Video
 
 <img src="screenshots/random_quotes_view.gif" width="250" />
 
