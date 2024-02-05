@@ -43,9 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
     await prefs.setString(AppCache.selectedLanguageCode, language);
   }
 
-  void _changeLanguage() {
+  void _changeLanguage() async {
     var newLanguage = _selectedLanguage == 'tr' ? 'en' : 'tr';
-    _saveLanguagePreference(newLanguage);
+    await _saveLanguagePreference(newLanguage);
     setState(() {
       _selectedLanguage = newLanguage;
       _getQuotesFuture = _getQuotes();
@@ -62,6 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<List<QuoteModel>> _getQuotes() async {
+    await _loadLanguagePreference();
     final querySnapshot = await FirebaseFirestore.instance
         .collection('quotes_$_selectedLanguage')
         .get();
