@@ -15,6 +15,7 @@ class AppColors {
 
   Color get tdBlue => Colors.blue;
 
+  static Color bgColorLastSelect = Vx.gray800;
   int get bgColorLength => bgColors.length;
   List<Color> get bgColors => [
         Vx.gray800,
@@ -26,5 +27,12 @@ class AppColors {
         Vx.pink800,
         Vx.orange800,
       ];
-  Color get bgRandomColor => bgColors[_random.nextInt(bgColorLength)];
+  Color get bgRandomColor {
+    var selectedColor = bgColors[_random.nextInt(bgColorLength)];
+    while (selectedColor == bgColorLastSelect){
+      selectedColor = bgColors[_random.nextInt(bgColorLength)];
+    }
+    bgColorLastSelect = selectedColor;
+    return selectedColor;
+  }
 }

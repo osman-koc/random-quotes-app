@@ -195,16 +195,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget quoteTextWidget(QuoteModel e) {
     return e.quote.text.white.italic.bold.xl3
         .make()
-        .shimmer()
         .box
-        .outerShadow3Xl
+        .outerShadow2Xl
         .make();
   }
 
   Widget quoteAuthorWidget(QuoteModel e) {
     return e.author.text.white.italic.xl2
         .make()
-        .shimmer()
         .box
         .outerShadowLg
         .make();
