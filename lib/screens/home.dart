@@ -1,13 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:randomquotes/constants/app_assets.dart';
-import 'package:randomquotes/constants/app_cache.dart';
 import 'package:randomquotes/constants/app_colors.dart';
 import 'package:randomquotes/extensions/app_lang.dart';
+import 'package:randomquotes/helpers/app_cache_helper.dart';
 import 'package:randomquotes/model/quote.dart';
 import 'package:randomquotes/screens/about_popup.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_speed_dial/simple_speed_dial.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -31,21 +30,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadLanguagePreference() async {
-    final prefs = await SharedPreferences.getInstance();
+    final lang = await AppCacheHelper.getSelectedLanguage();
     setState(() {
-      _selectedLanguage =
-          prefs.getString(AppCache.selectedLanguageCode) ?? 'tr';
+      _selectedLanguage = lang;
     });
-  }
-
-  Future<void> _saveLanguagePreference(String language) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(AppCache.selectedLanguageCode, language);
   }
 
   void _changeLanguage() async {
     var newLanguage = _selectedLanguage == 'tr' ? 'en' : 'tr';
-    await _saveLanguagePreference(newLanguage);
+    await AppCacheHelper.saveLanguagePreference(newLanguage);
     setState(() {
       _selectedLanguage = newLanguage;
       _getQuotesFuture = _getQuotes();
