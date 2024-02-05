@@ -19,14 +19,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  //List<QuoteModel> quotesData = [];
+  Future<List<QuoteModel>>? _getQuotesFuture;
   String _selectedLanguage = 'tr';
+  bool _loadedData = false;
 
   @override
   void initState() {
     super.initState();
     _loadLanguagePreference();
-    //_fetchQuotes();
+    _getQuotesFuture = _getQuotes();
   }
 
   Future<void> _loadLanguagePreference() async {
@@ -40,76 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _saveLanguagePreference(String language) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(AppCache.selectedLanguageCode, language);
-  }
-
-  // Future<void> _fetchQuotes() async {
-  //   final querySnapshot = await FirebaseFirestore.instance
-  //       .collection('quotes_$selectedLanguage')
-  //       .get();
-  //   setState(() {
-  //     quotesData = querySnapshot.docs
-  //         .map((doc) => QuoteModel.fromFirestore(doc))
-  //         .toList();
-  //     quotesData.shuffle();
-  //   });
-  // }
-
-  // QuoteModel getRandomQuote() {
-  //   final random = Random();
-  //   return quotesData[random.nextInt(quotesData.length)];
-  // }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('quotes_$_selectedLanguage')
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return CircularProgressIndicator();
-          }
-          final quotesData = snapshot.data!.docs;
-          quotesData.shuffle();
-          return vxSwiperWidget(quotesData);
-        },
-      ),
-      floatingActionButton: SpeedDial(
-        child: Icon(Icons.menu_outlined),
-        closedForegroundColor: Vx.gray800,
-        openForegroundColor: Vx.white,
-        closedBackgroundColor: Vx.white,
-        openBackgroundColor: Vx.gray800,
-        labelsBackgroundColor: Vx.white,
-        labelsStyle: TextStyle(color: Vx.black),
-        speedDialChildren: <SpeedDialChild>[
-          SpeedDialChild(
-            child: Icon(Icons.language_outlined),
-            foregroundColor: Vx.white,
-            backgroundColor: Vx.emerald600,
-            label: context.translate.changeLanguage,
-            onPressed: () {
-              setState(() {
-                _changeLanguage();
-              });
-            },
-            closeSpeedDialOnPressed: true,
-          ),
-          SpeedDialChild(
-            child: Icon(Icons.info_outline),
-            foregroundColor: Vx.white,
-            backgroundColor: Vx.amber600,
-            label: context.translate.about,
-            onPressed: () {
-              setState(() {
-                _showAboutDialog(context);
-              });
-            },
-          ),
-        ],
-      ),
-    );
   }
 
   void _changeLanguage() {
@@ -129,17 +60,103 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  VxSwiper vxSwiperWidget(quotesData) {
+  Future<List<QuoteModel>> _getQuotes() async {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('quotes_$_selectedLanguage')
+        .get();
+    var quotesData =
+        querySnapshot.docs.map((doc) => QuoteModel.fromFirestore(doc)).toList();
+    quotesData.shuffle();
+
+    List<QuoteModel> uniqueData = [];
+    quotesData.forEach((item) {
+      if (!uniqueData.contains(item)) {
+        uniqueData.add(item);
+      }
+    });
+
+    setState(() {
+      _loadedData = uniqueData.isNotEmpty;
+    });
+
+    return uniqueData;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: FutureBuilder(
+        future: _getQuotesFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return VStack(
+              [
+                appLogoWidget(),
+                context.translate.loading.text.white.make(),
+                CircularProgressIndicator(),
+              ],
+              crossAlignment: CrossAxisAlignment.center,
+              alignment: MainAxisAlignment.spaceAround,
+            )
+                .animatedBox
+                .p16
+                .color(Vx.gray800)
+                .make()
+                .h(context.screenHeight)
+                .w(context.screenWidth);
+          } else if (_loadedData) {
+            return vxSwiperWidget(snapshot.data);
+          } else {
+            return const SizedBox();
+          }
+        },
+      ),
+      floatingActionButton: !_loadedData
+          ? SizedBox()
+          : SpeedDial(
+              child: Icon(Icons.menu_outlined),
+              closedForegroundColor: Vx.gray800,
+              openForegroundColor: Vx.white,
+              closedBackgroundColor: Vx.white,
+              openBackgroundColor: Vx.gray800,
+              labelsBackgroundColor: Vx.white,
+              labelsStyle: TextStyle(color: Vx.black),
+              speedDialChildren: <SpeedDialChild>[
+                SpeedDialChild(
+                  child: Icon(Icons.language_outlined),
+                  foregroundColor: Vx.white,
+                  backgroundColor: Vx.emerald600,
+                  label: context.translate.changeLanguage,
+                  onPressed: () {
+                    setState(() {
+                      _changeLanguage();
+                    });
+                  },
+                  closeSpeedDialOnPressed: true,
+                ),
+                SpeedDialChild(
+                  child: Icon(Icons.info_outline),
+                  foregroundColor: Vx.white,
+                  backgroundColor: Vx.amber600,
+                  label: context.translate.about,
+                  onPressed: () {
+                    setState(() {
+                      _showAboutDialog(context);
+                    });
+                  },
+                ),
+              ],
+            ),
+    );
+  }
+
+  VxSwiper vxSwiperWidget(data) {
     return VxSwiper(
       scrollDirection: Axis.vertical,
       height: context.screenHeight,
       viewportFraction: 1.0,
-      onPageChanged: (index) {
-        setState(() {});
-      },
-      items: quotesData.map<Widget>(
-        (e) {
-          var model = QuoteModel.fromFirestore(e);
+      items: data.map<Widget>(
+        (model) {
           var selectedColor = AppColors(context).bgRandomColor;
           return VStack(
             [
@@ -154,24 +171,6 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ).toList(),
     );
-  }
-
-  Widget quoteAuthorWidget(QuoteModel e) {
-    return e.author.text.white.italic.xl2
-        .make()
-        .shimmer()
-        .box
-        .outerShadowLg
-        .make();
-  }
-
-  Widget quoteTextWidget(QuoteModel e) {
-    return e.quote.text.white.italic.bold.xl3
-        .make()
-        .shimmer()
-        .box
-        .outerShadow3Xl
-        .make();
   }
 
   Container appLogoWidget() {
@@ -190,6 +189,24 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Image.asset(AppAssets.appIconWhite, width: 50),
     );
+  }
+
+  Widget quoteTextWidget(QuoteModel e) {
+    return e.quote.text.white.italic.bold.xl3
+        .make()
+        .shimmer()
+        .box
+        .outerShadow3Xl
+        .make();
+  }
+
+  Widget quoteAuthorWidget(QuoteModel e) {
+    return e.author.text.white.italic.xl2
+        .make()
+        .shimmer()
+        .box
+        .outerShadowLg
+        .make();
   }
 
   IconButton shareIconButton(QuoteModel quoteItem) {
