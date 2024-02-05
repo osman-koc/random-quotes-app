@@ -48,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _saveLanguagePreference(newLanguage);
     setState(() {
       _selectedLanguage = newLanguage;
+      _getQuotesFuture = _getQuotes();
     });
   }
 
