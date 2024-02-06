@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:randomquotes/constants/app_assets.dart';
 import 'package:randomquotes/constants/app_colors.dart';
+import 'package:randomquotes/constants/app_settings.dart';
 import 'package:randomquotes/extensions/app_lang.dart';
 import 'package:randomquotes/helpers/app_cache_helper.dart';
 import 'package:randomquotes/model/quote.dart';
@@ -19,12 +20,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Future<List<QuoteModel>>? _getQuotesFuture;
-  String _selectedLanguage = 'tr';
+  String _selectedLanguage = 'en';
   bool _loadedData = false;
 
   @override
   void initState() {
     super.initState();
+    _selectedLanguage = AppSettings.selectedLang;
     _loadLanguagePreference();
     _getQuotesFuture = _getQuotes();
   }
