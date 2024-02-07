@@ -20,7 +20,7 @@ Flutter app that allows users to explore and discover random quotes in Turkish a
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/random-quotes-app.git
+   git clone https://github.com/osman-koc/random-quotes-app.git
    ```
 2. Navigate to the project directory:
    ```bash
