@@ -13,5 +13,6 @@
     "failed_to_load_quotes": "Alıntı yüklenemedi.",
     "nothing_found": "Hiçbir şey bulunamadı.",
     "error": "Bilinmeyen bir hata gerçekleşti.",
-    "select_language": "Dil Seç"
+    "select_language": "Dil Seç",
+    "language_settings": "Alıntı Dili"
 }

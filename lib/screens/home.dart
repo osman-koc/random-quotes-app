@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:randomquotes/constants/app_assets.dart';
 import 'package:randomquotes/constants/app_colors.dart';
@@ -123,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Icon(Icons.language_outlined),
                   foregroundColor: Vx.white,
                   backgroundColor: Vx.emerald600,
-                  label: context.translate.selectLanguage,
+                  label: context.translate.languageSettings,
                   onPressed: () {
                     setState(() {
                       _showPopup(
@@ -166,7 +167,13 @@ class _HomeScreenState extends State<HomeScreen> {
               appLogoWidget(),
               quoteTextWidget(model),
               quoteAuthorWidget(model),
-              shareIconButton(model)
+              Row(
+                children: [
+                  likeButton(model),
+                  SizedBox(width: 30),
+                  shareIconButton(model),
+                ],
+              )
             ],
             crossAlignment: CrossAxisAlignment.center,
             alignment: MainAxisAlignment.spaceAround,
@@ -200,6 +207,46 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget quoteAuthorWidget(QuoteModel e) {
     return e.author.text.white.italic.xl2.make().box.outerShadowLg.make();
+  }
+
+  Row likeButton(QuoteModel quoteItem) {
+    return Row(
+      children: [
+        IconButton(
+          icon: Icon(
+            quoteItem.isLiked ? Icons.thumb_up : Icons.thumb_up_outlined,
+            color: Vx.white,
+            size: 34,
+          ),
+          onPressed: () {
+            setState(() {
+              _toggleLike(quoteItem);
+            });
+          },
+        ),
+        quoteItem.likeCount.text.white.make(),
+      ],
+    );
+  }
+
+  Future<void> _toggleLike(QuoteModel quoteItem) async {
+    if (!quoteItem.isLiked) {
+      quoteItem.addLikedUser();
+    } else {
+      quoteItem.removeLikedUser();
+    }
+    _updateQuote(quoteItem);
+  }
+
+  Future<void> _updateQuote(QuoteModel quoteItem) async {
+    try {
+      final quoteRef = FirebaseFirestore.instance
+          .collection('quotes_$_selectedLanguage')
+          .doc(quoteItem.id);
+      await quoteRef.update(quoteItem.toMap());
+    } catch (e) {
+      if (kDebugMode) print('Error: $e');
+    }
   }
 
   IconButton shareIconButton(QuoteModel quoteItem) {

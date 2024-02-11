@@ -24,6 +24,8 @@ class AppLangTranslations {
   String get error => _appLocalizations.translate(key: 'error');
   String get selectLanguage =>
       _appLocalizations.translate(key: 'select_language');
+  String get languageSettings =>
+      _appLocalizations.translate(key: 'language_settings');
 }
 
 extension AppLangContextExtension on BuildContext {

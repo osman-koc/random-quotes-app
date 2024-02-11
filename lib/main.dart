@@ -10,6 +10,7 @@ void main() async {
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await AppSettings.loadUserId();
   runApp(const MyApp());
 }
 

@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:randomquotes/helpers/app_cache_helper.dart';
+import 'package:randomquotes/helpers/device_helper.dart';
 import 'package:randomquotes/util/localization.dart';
 
 class AppSettings {
@@ -17,6 +20,21 @@ class AppSettings {
   ];
 
   static String selectedLang = 'en';
+  static String userId = '';
+
+  static Future<void> loadUserId() async {
+    final storedUserId = await AppCacheHelper.getUserId();
+    if (storedUserId != null) {
+      userId = storedUserId;
+    } else {
+      final newUserId = DeviceHelper.generateUserId();
+      await AppCacheHelper.saveUserId(newUserId);
+      userId = newUserId;
+    }
+    if (kDebugMode) {
+      print('=====> loadUserId: ' + userId);
+    }
+  }
 
   static const List<LocalizationsDelegate> localizationsDelegates = [
     AppLocalizations.delegate,
