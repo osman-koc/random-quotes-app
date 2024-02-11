@@ -9,7 +9,7 @@ class AppLocalizations {
   AppLocalizations(this.locale);
 
   static const List<String> supportedLangCodes = ['tr', 'en'];
-  static const Locale defaultLocale = Locale('tr', 'TR');
+  static const Locale defaultLocale = Locale('en', 'UK');
 
   String getCurrentLangJsonFile() => 'assets/lang/${locale.languageCode}.json';
 

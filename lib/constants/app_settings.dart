@@ -22,6 +22,10 @@ class AppSettings {
   static String selectedLang = 'en';
   static String userId = '';
 
+  static void loadDefaultLanguage(BuildContext context) {
+    selectedLang = AppLocalizations.of(context).locale.languageCode.toString();
+  }
+
   static Future<void> loadUserId() async {
     final storedUserId = await AppCacheHelper.getUserId();
     if (storedUserId != null) {

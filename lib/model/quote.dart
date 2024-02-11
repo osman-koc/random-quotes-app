@@ -20,37 +20,46 @@ class QuoteModel {
 
   factory QuoteModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
+    List<String> likedUserIds = [];
+
+    var likedByUsersField = 'likedByUsers';
+    if (data.containsKey(likedByUsersField) &&
+        data[likedByUsersField] != null) {
+      var _likedUserData = data[likedByUsersField];
+      likedUserIds = (_likedUserData as List).map((x) => x as String).toList();
+    }
+
     return QuoteModel(
       id: doc.id,
       quote: data['quote'] ?? '',
       author: data['author'] ?? '',
-      likedByUsers: data['likedByUsers'] ?? [],
+      likedByUsers: likedUserIds,
       likeCount: data['likeCount'] ?? 0,
-      isLiked: data['likedByUsers']?.contains(AppSettings.userId) ?? false,
+      isLiked: likedUserIds.contains(AppSettings.userId),
     );
   }
-  
+
   Map<String, dynamic> toMap() {
     return {
       'quote': quote,
       'author': author,
-      'likedByUsers': likedByUsers.toList(),
+      'likedByUsers': likedByUsers,
       'likeCount': likeCount,
     };
   }
 
-  void addLikedUser(){
+  void addLikedUser() {
     var currentUserId = AppSettings.userId;
-    if (!likedByUsers.contains(currentUserId)){
+    if (currentUserId.isNotEmpty && !likedByUsers.contains(currentUserId)) {
       likedByUsers.add(currentUserId);
       likeCount++;
       isLiked = true;
     }
   }
 
-  void removeLikedUser(){
+  void removeLikedUser() {
     var currentUserId = AppSettings.userId;
-    if (likedByUsers.contains(currentUserId)){
+    if (currentUserId.isNotEmpty && likedByUsers.contains(currentUserId)) {
       likedByUsers.remove(currentUserId);
       likeCount--;
       isLiked = false;

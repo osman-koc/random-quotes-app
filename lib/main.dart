@@ -19,6 +19,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppSettings.loadDefaultLanguage(context);
+    
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Random Quotes',

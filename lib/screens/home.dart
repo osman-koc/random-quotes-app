@@ -22,7 +22,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Future<List<QuoteModel>>? _getQuotesFuture;
-  String _selectedLanguage = 'en';
+  String _selectedLanguage = AppSettings.selectedLang;
   bool _loadedData = false;
 
   @override
@@ -38,6 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _selectedLanguage = lang;
     });
+    if (kDebugMode)
+      print('====> _loadLanguagePreference selecetdLanguage is ' +
+          _selectedLanguage);
   }
 
   void _changeLanguage(String selectedLangCode) async {
@@ -58,24 +61,33 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<List<QuoteModel>> _getQuotes() async {
-    await _loadLanguagePreference();
-    final querySnapshot = await FirebaseFirestore.instance
-        .collection('quotes_$_selectedLanguage')
-        .get();
-    var quotesData =
-        querySnapshot.docs.map((doc) => QuoteModel.fromFirestore(doc)).toList();
-    quotesData.shuffle();
-
     List<QuoteModel> uniqueData = [];
-    quotesData.forEach((item) {
-      if (!uniqueData.contains(item)) {
-        uniqueData.add(item);
-      }
-    });
+
+    try {
+      await _loadLanguagePreference();
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('quotes_$_selectedLanguage')
+          .get();
+      var quotesData = querySnapshot.docs
+          .map((doc) => QuoteModel.fromFirestore(doc))
+          .toList();
+      quotesData.shuffle();
+      quotesData.forEach((item) {
+        if (!uniqueData.contains(item)) {
+          uniqueData.add(item);
+        }
+      });
+    } catch (ex) {
+      if (kDebugMode) print(ex);
+    }
 
     setState(() {
       _loadedData = uniqueData.isNotEmpty;
     });
+
+    if (kDebugMode)
+      print('====> _getQuotes method end. Data count is ' +
+          uniqueData.count().toString());
 
     return uniqueData;
   }

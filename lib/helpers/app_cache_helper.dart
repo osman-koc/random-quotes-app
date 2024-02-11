@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:randomquotes/constants/app_cache.dart';
+import 'package:randomquotes/constants/app_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppCacheHelper {
@@ -18,7 +19,11 @@ class AppCacheHelper {
   // Select Language - Start
   static Future<String> getSelectedLanguage() async {
     final lang = await getPreferenceString(AppCache.selectedLanguageCode);
-    return lang ?? 'tr';
+    if (kDebugMode) {
+      print('=====> getSelectedLanguage method called. lang is ');
+      print(lang);
+    }
+    return lang ?? AppSettings.selectedLang;
   }
 
   static Future<void> saveLanguagePreference(String language) async {
