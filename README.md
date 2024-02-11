@@ -11,7 +11,7 @@ Flutter app that allows users to explore and discover random quotes in Turkish a
 ## Screenshots
 This screenhots from v1.4.1
 
-<img src="screenshots/EN_01.png" width="250" /> <img src="screenshots/EN_02.png" width="250" /> <img src="screenshots/EN_03.png" width="250" />
+<img src="screenshots/EN_01.png" width="250" /> <img src="screenshots/EN_02.png" width="250" /> <img src="screenshots/EN_03.png" width="250" /> <img src="screenshots/Merged_Last.png" width="250" />
 
 ### Video
 This video from v1.0.0
