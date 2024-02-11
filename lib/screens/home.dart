@@ -7,6 +7,7 @@ import 'package:randomquotes/extensions/app_lang.dart';
 import 'package:randomquotes/helpers/app_cache_helper.dart';
 import 'package:randomquotes/model/quote.dart';
 import 'package:randomquotes/screens/about_popup.dart';
+import 'package:randomquotes/screens/select_language_popup.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:simple_speed_dial/simple_speed_dial.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -38,20 +39,19 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _changeLanguage() async {
-    var newLanguage = _selectedLanguage == 'tr' ? 'en' : 'tr';
-    await AppCacheHelper.saveLanguagePreference(newLanguage);
+  void _changeLanguage(String selectedLangCode) async {
+    await AppCacheHelper.saveLanguagePreference(selectedLangCode);
     setState(() {
-      _selectedLanguage = newLanguage;
+      _selectedLanguage = selectedLangCode;
       _getQuotesFuture = _getQuotes();
     });
   }
 
-  void _showAboutDialog(BuildContext context) {
+  void _showPopup(BuildContext context, Widget popup) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const AboutScreenPopup();
+        return popup;
       },
     );
   }
@@ -123,10 +123,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Icon(Icons.language_outlined),
                   foregroundColor: Vx.white,
                   backgroundColor: Vx.emerald600,
-                  label: context.translate.changeLanguage,
+                  label: context.translate.selectLanguage,
                   onPressed: () {
                     setState(() {
-                      _changeLanguage();
+                      _showPopup(
+                        context,
+                        SelectLanguagePopup(
+                          selectedLangCode: _selectedLanguage,
+                          onLanguageSelected: _changeLanguage,
+                        ),
+                      );
                     });
                   },
                   closeSpeedDialOnPressed: true,
@@ -138,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   label: context.translate.about,
                   onPressed: () {
                     setState(() {
-                      _showAboutDialog(context);
+                      _showPopup(context, const AboutScreenPopup());
                     });
                   },
                 ),
@@ -189,19 +195,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget quoteTextWidget(QuoteModel e) {
-    return e.quote.text.white.italic.bold.xl3
-        .make()
-        .box
-        .outerShadow2Xl
-        .make();
+    return e.quote.text.white.italic.bold.xl3.make().box.outerShadow2Xl.make();
   }
 
   Widget quoteAuthorWidget(QuoteModel e) {
-    return e.author.text.white.italic.xl2
-        .make()
-        .box
-        .outerShadowLg
-        .make();
+    return e.author.text.white.italic.xl2.make().box.outerShadowLg.make();
   }
 
   IconButton shareIconButton(QuoteModel quoteItem) {

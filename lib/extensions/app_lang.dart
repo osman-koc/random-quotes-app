@@ -22,8 +22,8 @@ class AppLangTranslations {
       _appLocalizations.translate(key: 'failed_to_load_quotes');
   String get nothingFound => _appLocalizations.translate(key: 'nothing_found');
   String get error => _appLocalizations.translate(key: 'error');
-  String get changeLanguage =>
-      _appLocalizations.translate(key: 'change_language');
+  String get selectLanguage =>
+      _appLocalizations.translate(key: 'select_language');
 }
 
 extension AppLangContextExtension on BuildContext {

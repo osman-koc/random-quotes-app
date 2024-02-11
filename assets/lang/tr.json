@@ -1,5 +1,5 @@
 {
-    "app_name": "Rastgele Sözler",
+    "app_name": "Random Quotes",
     "app_developer": "Osman Koç",
     "app_website": "www.osmkoc.com",
     "app_email": "info@osmkoc.com",
@@ -13,5 +13,5 @@
     "failed_to_load_quotes": "Alıntı yüklenemedi.",
     "nothing_found": "Hiçbir şey bulunamadı.",
     "error": "Bilinmeyen bir hata gerçekleşti.",
-    "change_language": "Dil değiştir"
+    "select_language": "Dil Seç"
 }

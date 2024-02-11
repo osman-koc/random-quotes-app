@@ -15,6 +15,8 @@ class AppColors {
 
   Color get tdBlue => Colors.blue;
 
+  Color get popupSelectedBg => Theme.of(context).scaffoldBackgroundColor.withOpacity(0.7);
+
   static Color bgColorLastSelect = Vx.gray800;
   int get bgColorLength => bgColors.length;
   List<Color> get bgColors => [
