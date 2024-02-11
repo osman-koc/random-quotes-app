@@ -9,10 +9,12 @@ Flutter app that allows users to explore and discover random quotes in Turkish a
 - Share your favorite quotes with friends.
 
 ## Screenshots
+This screenhots from v1.4.1
 
-<img src="screenshots/EN_1.jpeg" width="250" /> <img src="screenshots/EN_2.jpeg" width="250" /> <img src="screenshots/EN_3.jpeg" width="250" />
+<img src="screenshots/EN_01.png" width="250" /> <img src="screenshots/EN_02.png" width="250" /> <img src="screenshots/EN_03.png" width="250" />
 
 ### Video
+This video from v1.0.0
 
 <img src="screenshots/random_quotes_view.gif" width="250" />
 
