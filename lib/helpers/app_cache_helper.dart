@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:randomquotes/constants/app_cache.dart';
 import 'package:randomquotes/constants/app_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,11 +27,19 @@ class AppCacheHelper {
     return lang ?? AppSettings.selectedLang;
   }
 
+  static Future<void> loadSelectedLanguage(BuildContext context) async {
+    final lang = await getPreferenceString(AppCache.selectedLanguageCode);
+    if (lang == null || lang.isEmpty) {
+      AppSettings.loadDefaultLanguage(context);
+    } else {
+      AppSettings.selectedLang = lang;
+    }
+  }
+
   static Future<void> saveLanguagePreference(String language) async {
     await savePreferenceString(AppCache.selectedLanguageCode, language);
   }
   // Select Language - End
-
 
   // UserId - Start
   static Future<String?> getUserId() async {
@@ -60,5 +69,4 @@ class AppCacheHelper {
     }
   }
   // UserId - End
-
 }

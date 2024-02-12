@@ -20,10 +20,23 @@ class AppSettings {
   ];
 
   static String selectedLang = 'en';
-  static String userId = '';
+  static String userId = 'default';
 
   static void loadDefaultLanguage(BuildContext context) {
-    selectedLang = AppLocalizations.of(context).locale.languageCode.toString();
+    try {
+      String lang = Localizations.of(context, AppLocalizations).locale.languageCode.toString(); // AppLocalizations.of(context).locale.languageCode.toString();
+      if (['en', 'tr'].contains(lang)) {
+        selectedLang = lang;
+        if (kDebugMode) print('=====> loadDefaultLanguage - ' + selectedLang);
+      } else {
+        if (kDebugMode) print('=====> loadDefaultLanguage - lang is not contains: ' + lang);
+      }
+    } catch (ex) {
+      if (kDebugMode) {
+        print('=====> loadDefaultLanguage error');
+        print(ex);
+      }
+    }
   }
 
   static Future<void> loadUserId() async {

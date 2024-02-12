@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:randomquotes/constants/app_settings.dart';
 import 'package:randomquotes/firebase_options.dart';
+import 'package:randomquotes/helpers/app_cache_helper.dart';
 import 'package:randomquotes/screens/home.dart';
 
 void main() async {
@@ -19,8 +20,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppSettings.loadDefaultLanguage(context);
-    
+    AppCacheHelper.loadSelectedLanguage(context);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Random Quotes',
